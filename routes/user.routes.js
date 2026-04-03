@@ -8,7 +8,7 @@ import {
 import z from "zod";
 import { generateHashWithSalt } from "../util/hash.js";
 import { getUserByEmail } from "../services/user.service.js";
-import jwt from "jsonwebtoken";
+import { createUserToken } from "../util/token.js";
 
 const router = express.Router();
 
@@ -58,7 +58,9 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const validationResult = await signInPostRequestBodySchema.safeParseAsync(req.body);
+  const validationResult = await signInPostRequestBodySchema.safeParseAsync(
+    req.body,
+  );
   if (validationResult.error) {
     return res
       .status(400)
@@ -77,11 +79,11 @@ router.post("/login", async (req, res) => {
     password,
     user.salt,
   );
-  if (user != password) {
+  if (user.password != hashedPassword) {
     return res.status(400).json({ err: `Invalid password` });
   }
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  const token = createUserToken({ id: user.id });
   return res
     .cookie(token)
     .status(200)
