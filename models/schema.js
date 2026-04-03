@@ -14,3 +14,16 @@ export const users = pgTable("users", {
   cretatedAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });
+
+export const urlsTable = pgTable("urls", {
+  id: uuid().primaryKey().defaultRandom(),
+  shortCode: varchar("code", { length: 155 }).notNull().unique(),
+  targetURL: text("target_url").notNull(),
+
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
+
+  cretatedAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
+});

@@ -1,4 +1,4 @@
-import { validateUserToken } from "../util/token";
+import { validateUserToken } from "../util/token.js";
 
 export function authMiddleware(req, res, next) {
   const authHeader = req.header["authorization"];

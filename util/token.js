@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { userTokenSchema } from "./validation/token.validation";
+import { userTokenSchema } from "./validation/token.validation.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function createUserToken(payload) {
