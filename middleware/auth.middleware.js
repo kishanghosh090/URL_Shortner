@@ -1,7 +1,8 @@
 import { validateUserToken } from "../util/token.js";
 
-export function authMiddleware(req, res, next) {
-  const authHeader = req.header["authorization"];
+export async function authMiddleware(req, res, next) {
+  const authHeader = req.headers["authorization"];
+
   if (!authHeader) {
     return next();
   }
@@ -13,7 +14,8 @@ export function authMiddleware(req, res, next) {
   }
 
   const [_, token] = authHeader.split(" ");
-  const payload = validateUserToken(token);
+  const payload = await validateUserToken(token);
+
   if (payload == null) {
     return res.status(400).json({
       err: "Invalid token",

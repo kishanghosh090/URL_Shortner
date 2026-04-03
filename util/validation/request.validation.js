@@ -11,6 +11,6 @@ export const signInPostRequestBodySchema = z.object({
 });
 
 export const shortenPostRequestBodySchema = z.object({
-  url: z.url(),
+  url: z.string(),
   code: z.string().optional(),
 });

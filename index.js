@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 6002;
 
 app.use(express.json());
+app.use(express.urlencoded());
 
 app.get("/", (req, res) => {
   res.json({});
@@ -11,10 +12,9 @@ app.get("/", (req, res) => {
 
 import userRoute from "./routes/user.routes.js";
 import urlRoute from "./routes/url.routes.js";
-import { authMiddleware } from "./middleware/auth.middleware.js";
 
 app.use("/api/v1/user", userRoute);
-app.use(authMiddleware);
+
 app.use("/api/v1/url", urlRoute);
 
 app.listen(PORT, () => {
