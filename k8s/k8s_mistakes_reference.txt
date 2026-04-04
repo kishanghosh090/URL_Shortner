@@ -1,0 +1,56 @@
+KUBERNETES CLUSTER SETUP - MISTAKES & LEARNINGS (DIGITALOCEAN)
+
+1.  WRONG NETWORK INTERFACE ISSUE
+
+-   Problem: Kubernetes picked wrong IP (10.47.x.x instead of VPC
+    10.122.x.x)
+-   Fix: Set kubelet node IP using: KUBELET_EXTRA_ARGS=–node-ip=
+
+2.  VPC NETWORK CONFUSION
+
+-   Problem: Nodes appeared in same VPC but used unreachable interface
+-   Learning: Always verify INTERNAL-IP in kubectl get nodes
+
+3.  IP FORWARDING NOT ENABLED
+
+-   Problem: kubeadm join failed
+-   Fix: sysctl -w net.ipv4.ip_forward=1 Persist via /etc/sysctl.conf
+
+4.  RE-RUNNING KUBEADM WITHOUT RESET
+
+-   Problem: Ports in use, config exists
+-   Fix: kubeadm reset -f rm -rf /etc/kubernetes /var/lib/etcd
+
+5.  NODE NAME CONFLICT
+
+-   Problem: Node already exists in cluster
+-   Fix: kubectl delete node
+
+6.  PACKAGE VERSION MISMATCH
+
+-   Problem: master and worker different versions
+-   Fix: install same version and hold packages
+
+7.  APT HELD PACKAGE ERROR
+
+-   Fix: apt-mark unhold kubelet kubeadm kubectl apt install
+    –allow-downgrades
+
+8.  FIREWALL / NETWORK ISSUES
+
+-   Problem: no route to host
+-   Fix: Ensure VPC connectivity Open ports or disable firewall
+
+9.  FLANNEL (CNI) NOT WORKING
+
+-   Problem: pods can’t communicate
+-   Fix: kubectl apply -f flannel.yaml Ensure UDP 8472 open
+
+10. KUBELET PORT (10250) NOT REACHABLE
+
+-   Root cause: wrong IP or network block
+
+FINAL CHECKLIST: - kubectl get nodes → all Ready - kubectl get pods -n
+kube-system → all Running - test pod works (ping + DNS)
+
+KEY TAKEAWAY: Always control node IP in multi-network environments.
